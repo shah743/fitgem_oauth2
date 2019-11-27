@@ -40,13 +40,14 @@ module FitgemOauth2
       @connection = Faraday.new('https://api.fitbit.com')
     end
 
-    def refresh_access_token(refresh_token)
+    def refresh_access_token(refresh_token, expires_in)
       response = connection.post('/oauth2/token') do |request|
         encoded = Base64.strict_encode64("#{@client_id}:#{@client_secret}")
         request.headers['Authorization'] = "Basic #{encoded}"
         request.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-        request.params['grant_type'] = 'refresh_token'
+        request.params['grant_type']    = 'refresh_token'
         request.params['refresh_token'] = refresh_token
+        request.params['expires_in']    = expires_in
       end
       JSON.parse(response.body)
     end
